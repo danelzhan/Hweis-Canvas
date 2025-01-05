@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "My project (2).sln"
+    "dotnet.defaultSolution": "Hweis-Canvas.sln"
 }

@@ -11,7 +11,7 @@ public class SpellRecognition {
     public static int maxInputs = 10;
     public static int numSpells = 30;
     public static Vector2[,] allSpells;
-    public static string[] spellNames = {"four", "infinity", "w", "circle", "square", "sin"};
+    public static string[] spellNames = {"blue", "red", "infinity"};
 
 
     public static void Start() {
@@ -77,7 +77,7 @@ public class SpellRecognition {
 
     }
 
-    public static int getSpell (List<Vector2> allPoints) {  
+    public static string getSpell (List<Vector2> allPoints) {  
         int interval = getInterval(allPoints.Count);
         List<Vector2> unitVectors;
         unitVectors = getUnitVectors(allPoints, interval);
@@ -99,7 +99,9 @@ public class SpellRecognition {
                 holderIndex = spellIndex;
             }
         }
-        Debug.Log("spell: " + spellNames[holderIndex]);
+
+        Debug.Log(spellNames[holderIndex]);
+        return(spellNames[holderIndex]);
 
         //float[] cosValues = getCosValues(getDifferenceVectors(allPoints, interval));
 
@@ -111,7 +113,6 @@ public class SpellRecognition {
         // Debug.Log("sum" + sum);
         // Debug.Log("inputs" + cosValues.Length);
         
-        return 0;
     }
 
     static int getInterval (int length) {

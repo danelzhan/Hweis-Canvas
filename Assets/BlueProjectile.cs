@@ -1,6 +1,8 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
-public class Blue : Projectile
+public class BlueProjectile : Projectile
 {
     void OnTriggerEnter2D(Collider2D other) {
         Debug.Log("collided");

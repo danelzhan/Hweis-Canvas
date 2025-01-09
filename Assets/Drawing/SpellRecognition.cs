@@ -11,7 +11,7 @@ public class SpellRecognition {
     public static int maxInputs = 10;
     public static int numSpells = 30;
     public static Vector2[,] allSpells;
-    public static string[] spellNames = {"blue", "red", "infinity"};
+    public static string[] spellNames = {"blue", "blue", "blue", "red", "red", "red", "infinity", "infinity", "infinity"};
 
 
     public static void Start() {
@@ -59,8 +59,8 @@ public class SpellRecognition {
 
         int interval = getInterval(allPoints.Count);
 
-        List<Vector2> unitVectors = new List<Vector2>();
-        unitVectors = getUnitVectors(allPoints, interval);  
+        List<Vector2> scaledVectors = new List<Vector2>();
+        scaledVectors = getScaledVectors(allPoints, interval);  
 
 
         string existingSpellData = "";
@@ -73,14 +73,14 @@ public class SpellRecognition {
 
         reader.Close();
 
-        saveSpellJson(spellFilePath, unitVectors, existingSpellData);
+        saveSpellJson(spellFilePath, scaledVectors, existingSpellData);
 
     }
 
     public static string getSpell (List<Vector2> allPoints) {  
         int interval = getInterval(allPoints.Count);
-        List<Vector2> unitVectors;
-        unitVectors = getUnitVectors(allPoints, interval);
+        List<Vector2> scaledVectors;
+        scaledVectors = getScaledVectors(allPoints, interval);
 
         // Vector2[,] testSpells;
         // testSpells = new Vector2[numSpells, maxInputs];
@@ -91,7 +91,7 @@ public class SpellRecognition {
         //     }
         // }
 
-        float[] standardDeviations = getStandardDeviations(unitVectors, allSpells);
+        float[] standardDeviations = getStandardDeviations(scaledVectors, allSpells);
 
         int holderIndex = 0;
         for(int spellIndex = 1; spellIndex < spellNames.Length; spellIndex++) {
@@ -119,24 +119,48 @@ public class SpellRecognition {
         return Mathf.Max((int)Mathf.Ceil((float)length / (float)maxInputs), 1);
     }
 
-    static List<Vector2> getUnitVectors (List<Vector2> allPoints, int interval) {
+    static List<Vector2> getScaledVectors (List<Vector2> allPoints, int interval) {
 
-        List<Vector2> unitVectors;
-        unitVectors = new List<Vector2>();
+        
+
+        List<Vector2> scaledVectors;
+        scaledVectors = new List<Vector2>();
         Vector2 distanceVector;
         distanceVector = new Vector2();
 
+        List<Vector2> distanceVectors;
+        distanceVectors = new List<Vector2>();
 
-        for (int index = 0; index < allPoints.Count - interval; index += interval) {
+
+        // get distance vectors
+        for (int index = 0; index < allPoints.Count - interval; index += interval) {    
             Vector2 currentPoint = allPoints[index];
             Vector2 nextPoint = allPoints[index + interval];
             distanceVector = (new Vector2(nextPoint.x - currentPoint.x, nextPoint.y - currentPoint.y));
-            unitVectors.Add(distanceVector / distanceVector.magnitude);
+            distanceVectors.Add(distanceVector);
         }
 
-        //if (unitVectors.Count != 10) {Debug.Log("# of vectors: " + unitVectors.Count);}
 
-        return unitVectors;
+        // find scale multiplier
+        int greatestDistanceVectorIndex = 0;
+        float holder = 0;
+        for (int index = 0; index < distanceVectors.Count; index++) {
+            if (distanceVectors[index].magnitude > holder) {
+                greatestDistanceVectorIndex = index;
+            }
+        }
+
+        float scaleMultiplier = 1 / distanceVectors[greatestDistanceVectorIndex].magnitude;
+
+        // scale vectors to same size
+        for (int index = 0; index < distanceVectors.Count; index++) {
+            scaledVectors.Add(distanceVectors[index] * scaleMultiplier);
+
+        }
+
+        //if (scaledVectors.Count != 10) {Debug.Log("# of vectors: " + scaledVectors.Count);}
+
+        return scaledVectors;
 
     }
 
@@ -158,16 +182,15 @@ public class SpellRecognition {
 
     }
 
-    static float[] getStandardDeviations(List<Vector2> inputUnitVectors, Vector2[,] spellUnitVectors) {
-        float[] standardDeviations = new float[spellUnitVectors.GetLength(1)];
+    static float[] getStandardDeviations(List<Vector2> inputscaledVectors, Vector2[,] spellscaledVectors) {
+        float[] standardDeviations = new float[spellscaledVectors.GetLength(0)];
         float holder;
-
-        for (int spellIndex = 0; spellIndex < spellUnitVectors.GetLength(1); spellIndex++) {
+        for (int spellIndex = 0; spellIndex < spellscaledVectors.GetLength(0); spellIndex++) {
 
             holder = 0;
-            for (int vectorIndex = 0; vectorIndex < Mathf.Min(spellUnitVectors.GetLength(0), inputUnitVectors.Count); vectorIndex++) {
-                holder += Mathf.Pow(inputUnitVectors[vectorIndex].x - spellUnitVectors[spellIndex, vectorIndex].x, 2);
-                holder += Mathf.Pow(inputUnitVectors[vectorIndex].y - spellUnitVectors[spellIndex, vectorIndex].y, 2);
+            for (int vectorIndex = 0; vectorIndex < Mathf.Min(spellscaledVectors.GetLength(1), inputscaledVectors.Count); vectorIndex++) {
+                holder += Mathf.Pow(inputscaledVectors[vectorIndex].x - spellscaledVectors[spellIndex, vectorIndex].x, 2);
+                holder += Mathf.Pow(inputscaledVectors[vectorIndex].y - spellscaledVectors[spellIndex, vectorIndex].y, 2);
             }
             standardDeviations[spellIndex] = Mathf.Sqrt(holder/(standardDeviations.Length));
 
@@ -177,10 +200,10 @@ public class SpellRecognition {
 
     }
 
-    static void saveSpellJson(string jsonFilePath, List<Vector2> unitVectors, string existingSpellData) {
+    static void saveSpellJson(string jsonFilePath, List<Vector2> scaledVectors, string existingSpellData) {
 
         SpellData spellData;
-        spellData = new SpellData(unitVectors, "name");
+        spellData = new SpellData(scaledVectors, "name");
 
         if (existingSpellData != "") {
             System.IO.File.WriteAllText(jsonFilePath, existingSpellData + spellData.toString());
@@ -195,22 +218,22 @@ public class SpellRecognition {
 
 public class SpellData {
     
-    List<Vector2> unitVectors;
+    List<Vector2> scaledVectors;
     string name;
 
-    public SpellData(List<Vector2> unitVectors, string name) {
-        this.unitVectors = unitVectors;
+    public SpellData(List<Vector2> scaledVectors, string name) {
+        this.scaledVectors = scaledVectors;
         this.name = name;
     }
 
     public string toString() {
         string output = "";
-        for (int i = 0; i < unitVectors.Count; i++) {
+        for (int i = 0; i < scaledVectors.Count; i++) {
 
-            if (i != unitVectors.Count - 1) {
-                output += "(" + unitVectors[i].x + "," + unitVectors[i].y + "), ";
+            if (i != scaledVectors.Count - 1) {
+                output += "(" + scaledVectors[i].x + "," + scaledVectors[i].y + "), ";
             } else {
-                output += "(" + unitVectors[i].x + "," + unitVectors[i].y + ")";
+                output += "(" + scaledVectors[i].x + "," + scaledVectors[i].y + ")";
             }
 
         }

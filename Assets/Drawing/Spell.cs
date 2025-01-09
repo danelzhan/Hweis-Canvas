@@ -11,6 +11,7 @@ public class Spell : MonoBehaviour
     // infinity
     public GameObject infinity;
     public float infinityDuration;
+    public float infinityCoolDown;
     bool infinityCasting;
     float infinityTimeHolder;
 
@@ -38,7 +39,7 @@ public class Spell : MonoBehaviour
 
         string spellName = SpellRecognition.getSpell(allPoints);
 
-        if (spellName == "infinity") {
+        if (spellName == "infinity" && Time.time > infinityTimeHolder) {
             castInfinity();
         } else if (spellName == "blue") {
             castBlue();
@@ -82,6 +83,7 @@ public class Spell : MonoBehaviour
         if (infinityCasting && Time.time > infinityTimeHolder) {
             spell.SetActive(false);
             infinityCasting = false;
+            infinityTimeHolder = Time.time + infinityCoolDown;
         }
     }
 

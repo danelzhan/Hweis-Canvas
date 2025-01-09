@@ -7,6 +7,7 @@ TagManager:
   - ItemGun
   - Line
   - Spell
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -18,8 +19,8 @@ TagManager:
   - Ground
   - Items
   - PlayerProjectiles
-  - 
-  - 
+  - Spells
+  - Enemy
   - 
   - 
   - 
@@ -46,6 +47,9 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Spells
+    uniqueID: 3186181965
     locked: 0
   m_RenderingLayers:
   - Default

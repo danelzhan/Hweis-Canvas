@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8566566304868590107}
   - component: {fileID: 4933832071904134371}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Infinity
-  m_TagString: Untagged
+  m_TagString: Spell
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -712631045867808456, guid: b670ab75dde984907b8570040daa08c5, type: 3}
-  m_Color: {r: 0.71488965, g: 0.990566, b: 0.990566, a: 1}
+  m_Color: {r: 0, g: 1, b: 0.8818593, a: 0.54509807}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

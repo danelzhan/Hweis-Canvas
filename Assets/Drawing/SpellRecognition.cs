@@ -100,7 +100,14 @@ public class SpellRecognition {
             }
         }
 
-        Debug.Log(spellNames[holderIndex]);
+        Debug.Log(spellNames[holderIndex] + " std: " + standardDeviations[holderIndex]);
+
+        if (standardDeviations[holderIndex] > 0.5f) {
+            Debug.Log("spell not recognized");
+            return "spell not recognized";
+        }
+
+
         return(spellNames[holderIndex]);
 
         //float[] cosValues = getCosValues(getDifferenceVectors(allPoints, interval));

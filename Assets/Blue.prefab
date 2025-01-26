@@ -252,6 +252,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   forceMultiplier: 3
+  collider: {fileID: 3197133222867303172}
 --- !u!1 &9163962018642402627
 GameObject:
   m_ObjectHideFlags: 0

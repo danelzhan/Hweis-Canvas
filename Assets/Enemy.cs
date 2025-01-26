@@ -4,14 +4,17 @@ public class Enemy : MonoBehaviour
 {
 
     public int maxHealth;
-    public int health;
+    int health;
     public GameObject healthBar;
     public float healthBarMaxWidth;
+    public float direction;
+    public float speedMutiplier;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         health = maxHealth;
+        
     }
 
     public void looseHealth(int healthLost) {
@@ -26,5 +29,10 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    void FixedUpdate(){
+        Vector2 velocity = GetComponent<Rigidbody2D>().linearVelocity;  
+        velocity = new Vector2(direction * speedMutiplier, velocity.y);
+        GetComponent<Rigidbody2D>().linearVelocity = velocity;
+    }
 
 }

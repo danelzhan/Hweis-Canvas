@@ -11,7 +11,7 @@ public class SpellRecognition {
     public static int maxInputs = 10;
     public static int numSpells = 30;
     public static Vector2[,] allSpells;
-    public static string[] spellNames = {"blue", "blue", "blue", "red", "red", "red", "infinity", "infinity", "infinity"};
+    public static string[] spellNames = {"blue", "blue", "blue", "red", "red", "red", "infinity", "infinity", "infinity", "blue", "blue", "blue"};
 
 
     public static void Start() {
@@ -102,7 +102,7 @@ public class SpellRecognition {
 
         Debug.Log(spellNames[holderIndex] + " std: " + standardDeviations[holderIndex]);
 
-        if (standardDeviations[holderIndex] > 0.5f) {
+        if (standardDeviations[holderIndex] > 0.45f) {
             Debug.Log("spell not recognized");
             return "spell not recognized";
         }
@@ -254,7 +254,7 @@ public class SpellData {
 
 public class NeuralNetwork {
 
-    public int numLayerNeurons = 32;
+    public int numLayerNeurons = 16;
     int initialLength;
     int resultSize;
     float[] initialNeurons;
@@ -284,9 +284,75 @@ public class NeuralNetwork {
 
     float[] getNegativeGradient (Neuron[] results, Neuron[] expectedResults) {
  
-        int gradientDimension = (int) (initialLength * numLayerNeurons + Mathf.Pow(numLayerNeurons, 2) + resultSize * numLayerNeurons);
+        int gradientDimension = (int) ((results.Length * (Mathf.Pow(numLayerNeurons, 2)+ numLayerNeurons + 1)));
+
+
+
 
         return null;
+
+    }
+
+    float getPartialWeightFinal (int index, Neuron[] expectedResults) {
+        
+        Neuron neuron = results[index];
+        float partial;
+
+        partial = 2 * ( neuron.getValue() - expectedResults[index] ) * 
+                        sigmoidDerivative(neuron) *
+                        neuron.getRawSum();
+
+        return partial;
+            
+    }
+
+    float getPartialWeightLayer2 (int index, Neuron[] expectedResults) {
+
+        Neuron neuron = stage2Neurons[index];
+        float partial = 0;
+
+        for (int i = 0; i < results.Length; i++) {
+            partial += 2 * ( results[i].getValue() ) * sigmoidDerivative( results[i] ) * results[i].getWeight *
+            sigmoidDerivative(neuron) * neuron.getRawSum;
+        }
+
+        return partial;
+
+    }
+
+    float getPartialWeightLayer1 (int index, Neuron[] expectedResults) {
+
+        Neuron neuron = stage2Neurons[index];
+        float partial = 0;
+
+        for (int i = 0; i < results.Length; i++) {
+
+            for (int j = 0; j < results.Length; j++) {
+
+
+
+            }
+
+        }
+
+        return partial;
+        
+    }
+
+    float sigmoidDerivative (Neuron neuron) {
+        return ( Mathf.Exp( - ( neuron.getBias() + neuron.getWeightedSum() )) / 
+                Mathf.Pow( 1 + Mathf.Exp( - ( neuron.getBias() + neuron.getWeightedSum() ) ) , 2 ) );
+    }
+
+    float getCost (Neuron[] results, Neuron[] expectedResults) {
+        
+        float cost = 0;
+
+        for (int i = 0; i < results.Length; i++ ) {
+            cost += (Mathf.Pow(results[i].getValue() - expectedResults[i].getValue(), 2));
+        }
+
+        return cost;
 
     }
 
@@ -295,9 +361,12 @@ public class NeuralNetwork {
 public class Neuron {
 
     float[] weights;
-    float value;
     float bias;
+    float value;
+    float weightedSum;
+    float rawSum;
     float randomLimit = 5.0f;
+    float[] inputs;
 
     public Neuron (int numInputs) {
         float[] weights = new float[numInputs];
@@ -314,13 +383,17 @@ public class Neuron {
 
     public void activateNueron (float[] inputs) {
 
-        float weightedSum = 0;
+        this.inputs = inputs;
+
+        weightedSum = 0;
+        rawSum = 0;
 
         for (int index = 0; index < inputs.Length; index++) {
-            weightedSum += inputs[index] * weights[index];
+            weightedSum += this.inputs[index] * weights[index];
+            rawSum += this.inputs[index];
         }
         weightedSum += this.bias;
-
+        
         value = activationFunction(weightedSum);
 
     }
@@ -331,6 +404,26 @@ public class Neuron {
 
     public void adjustWeight (int index, float newWeight) {
         this.weights[index] = newWeight;
+    }
+
+    public float getValue() {
+        return value;
+    }
+
+    public float getWeightedSum() {
+        return weightedSum;
+    }
+
+    public float getRawSum() {
+        return rawSum;
+    }
+
+    public float getBias() {
+        return bias;
+    }
+
+    public float getWeight() {
+        return weight;
     }
 
 }

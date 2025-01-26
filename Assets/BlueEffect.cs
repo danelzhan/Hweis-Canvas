@@ -4,6 +4,7 @@ public class BlueEffect : MonoBehaviour
 {
 
     public float forceMultiplier;
+    public Collider2D collider;
     void OnTriggerEnter2D(Collider2D other) {
         
         if (other.gameObject.tag == "Enemy") {

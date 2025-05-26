@@ -3,6 +3,7 @@
 
 # Updates
 <p>01/05/2025 - Finished prototyping spell recognizer and rough spells, see demo <a href="https://youtu.be/-lWyHkT7xDM">here</a>.</p>
+<p>05/26/2025 - Started assigning sprites, animations & spell effects, added itme system, inventory system & improved gesture recognition algorithm, see demo <a href="https://youtu.be/R1S1TrbgAnk">here</a>.</p>
 
 # Contacts
 <p>Instagram: @danel.zhan</p>

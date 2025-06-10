@@ -5,6 +5,7 @@
 <p>01/05/2025 - Finished prototyping spell recognizer and rough spells, see demo <a href="https://youtu.be/-lWyHkT7xDM">here</a>.</p>
 <p>05/26/2025 - Started assigning sprites, animations & spell effects, added itme system, inventory system & improved gesture recognition algorithm, see demo <a href="https://youtu.be/R1S1TrbgAnk">here</a>.</p>
 <p>05/30/2025 - More sprites, background art, enemy and companion follow logic, augments, dashing, see demo <a href="https://youtu.be/8VKC--MP-Xk">here</a>.</p>
+<p>05/30/2025 - Guardian attacks, camera movements, smoother movement, added augment functionality, involving actual rogulike elements, see demo <a href="https://youtu.be/ykkEZU72tDQ">here</a>.</p>
 
 # Contacts
 <p>Instagram: @danel.zhan</p>
